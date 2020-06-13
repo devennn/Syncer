@@ -1,2 +1,2 @@
-# rclone-gui
-GUI for Rclone 
+# RClone GUI
+GUI viewer for RClone
