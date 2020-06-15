@@ -9,13 +9,13 @@ class RClone:
         self.pathBuild = ""
         self.srcPath = ""
         self.desPath = ""
-
+        
 
     def run_rclone(self, command, args_list=[], backFlag=False):
         pipeOutput = False
         if command == "lsf":
             if backFlag == False and args_list[0][0][-1] != '/' and self.pathBuild is not "":
-                logging.debug("File: {}".format(args_list[0][0]))
+                logging.debug("run_rclone: File: {}".format(args_list[0][0]))
                 return
             if backFlag == False:
                 self.pathBuild = os.path.join(self.pathBuild, args_list[0][0])
@@ -41,7 +41,7 @@ class RClone:
             self.password = self.prompt_password()
 
         stdout = ""
-        logging.debug("Subprocess: {}".format(cmd))
+        logging.debug("rclone_process: Subprocess: {}".format(cmd))
         if pipeOutput is True:
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE, universal_newlines=True)
