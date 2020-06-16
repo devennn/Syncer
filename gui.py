@@ -30,9 +30,14 @@ def setup_window(drive_list):
             sg.Button("Source", key='-SETSRC-'), sg.Button("Destination", key='-SETDES-')]
     row3 = [sg.Text("Source:", size=(10, 1)), sg.Text(size=(55, 1), key='-SRC-', background_color='#ffffff')]
     row4 = [sg.Text("Destination:", size=(10, 1)), sg.Text(size=(55, 1), key='-DES-', background_color='#ffffff')]
-    row5 = [sg.Text(size=(65, 1), key='-VIEWPROCESS-')]
+    row5 = [sg.Text("Status:", size=(10, 1)), sg.Text(size=(55, 1), key='-VIEWPROCESS-', text_color='#ffffff', background_color='#000000')]
 
     return [row1_tabGroup , row2, row3, row4, row5] 
+
+
+def print_process(window, message):
+    window['-VIEWPROCESS-'].update(message)
+    window.Refresh()
 
 
 def main():
@@ -40,6 +45,7 @@ def main():
     drive_list = rc.run_rclone("listremotes")
     layout = setup_window(drive_list)
     window = sg.Window("Syncer", layout)
+    rc.window = window
     backFlag = False
     startFlag = True
     chosenPath = ''
@@ -91,7 +97,7 @@ def main():
                 if len(chosenPath) == 0:
                     continue
                 if chosenPath[-1] != '/' and chosenPath[-1] != ':':
-                    window['-VIEWPROCESS-'].update("Destination cannot be a File")
+                    print_process(window, "Destination cannot be a File")
                     continue
                 window['-DES-'].update(chosenPath)
                 rc.desPath = chosenPath
@@ -101,24 +107,24 @@ def main():
                     continue
                 if event == '-COPY-':
                     record_process(rc.srcPath, rc.desPath)
-                window['-VIEWPROCESS-'].update("Start Copy...")
+                print_process(window, "Start Copy...")
                 rc.run_rclone("copy", [rc.srcPath])
-                window['-VIEWPROCESS-'].update("Done Copy...")
+                print_process(window, "Done Copy...")
             
             if event == '-SYNC-' or event == '-SYNCPREV-': # Sync button  
                 if rc.srcPath == '' or rc.desPath == '':
                     continue             
-                window['-VIEWPROCESS-'].update("Start Sync...")
+                print_process(window, "Start Sync...")
                 rc.run_rclone("sync")
-                window['-VIEWPROCESS-'].update("Done Sync...") 
+                print_process(window, "Done Sync...")
 
             if event == '-GETPREV-':
                 fname = "prevprocess.json"
                 if os.path.exists(fname) is False:
-                    window['-VIEWPROCESS-'].update("No previous process...")
+                    print_process(window, "No previous process...")
                 else:
                     hist_list = load_previous_process(fname, drive_list)
-                    window['-VIEWPROCESS-'].update("Choose Drive to Show...")
+                    print_process(window, "Choose Drive to Show...")
             
             if event == '-CHOOSEPREV-':
                 logging.debug("main: PREVDIRS: {}".format(values['-PREVDIRS-']))

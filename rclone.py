@@ -1,5 +1,6 @@
 import os
 import logging
+import threading
 import subprocess
 import PySimpleGUI as sg 
 
@@ -9,6 +10,7 @@ class RClone:
         self.pathBuild = ""
         self.srcPath = ""
         self.desPath = ""
+        self.window = None
         
 
     def run_rclone(self, command, args_list=[], backFlag=False):
@@ -31,7 +33,7 @@ class RClone:
         elif command == "copy":
             cmd= ["rclone", command, args_list[0], self.desPath, "--no-traverse", "--progress"]
         elif command == "sync":
-            cmd= ["rclone", command, self.srcPath, self.desPath, "--no-traverse", "--progress"]
+            cmd= ["rclone", command, self.srcPath, self.desPath, "--progress"]
         
         return self.rclone_process(cmd, pipeOutput)
 
@@ -41,17 +43,19 @@ class RClone:
             self.password = self.prompt_password()
 
         stdout = ""
-        logging.debug("rclone_process: Subprocess: {}".format(cmd))
-        if pipeOutput is True:
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE, universal_newlines=True)
-            stdout, _ = p.communicate(self.password)
-        else:
-            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE, 
-                universal_newlines=True)
-            p.communicate(self.password)
+        logging.debug("rclone_process: Invoking: {}".format(cmd))
 
-        p.wait()
+        if pipeOutput is True:
+            stdoutPipeVal = subprocess.PIPE
+        else:
+            stdoutPipeVal = None
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=stdoutPipeVal,
+            stderr=subprocess.PIPE, universal_newlines=True)
+
+        stdout, _ = p.communicate(self.password)
+        
+        if stdout is None:
+            return
 
         return self.rclone_format(stdout)
         
