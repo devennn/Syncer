@@ -58,3 +58,7 @@ def record_process(srcPath, desPath, fname="prevprocess.json"):
 
     with open(fname, 'w') as f:
         f.write(json.dumps(hist))
+
+def print_process(window, message):
+    window['-VIEWPROCESS-'].update(message)
+    window.Refresh()

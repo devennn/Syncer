@@ -1,8 +1,14 @@
 import os
+import time
 import logging
 import threading
 import subprocess
 import PySimpleGUI as sg 
+
+from utils import print_process
+
+process_list = ['copy', 'sync']
+gradientColor = ['#0000b3', '#0000cc', '#0000e6', '#0000ff', '#1a1aff', '#3333ff', '#4d4dff']
 
 class RClone:
     def __init__(self):
@@ -11,6 +17,7 @@ class RClone:
         self.srcPath = ""
         self.desPath = ""
         self.window = None
+        self.startProcess = False
         
 
     def run_rclone(self, command, args_list=[], backFlag=False):
@@ -39,24 +46,27 @@ class RClone:
 
 
     def rclone_process(self, cmd, pipeOutput):
-        if self.password == "":
-            self.password = self.prompt_password()
+
+        logging.debug("rclone_process: Invoking: {}".format(cmd))
+        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
+                                universal_newlines=True)
+        p.stdin.write(self.password)
+        p.stdin.close()
 
         stdout = ""
-        logging.debug("rclone_process: Invoking: {}".format(cmd))
-
-        if pipeOutput is True:
-            stdoutPipeVal = subprocess.PIPE
-        else:
-            stdoutPipeVal = None
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=stdoutPipeVal,
-            stderr=subprocess.PIPE, universal_newlines=True)
-
-        stdout, _ = p.communicate(self.password)
-        
-        if stdout is None:
-            return
-
+        start_time = time.monotonic()
+        indx = 0
+        for line in p.stdout: # Get Real time output from subprocess
+            if self.window is not None and self.startProcess is False and cmd[1] in process_list:
+                fmtTime = time.strftime("%H:%M:%S", time.gmtime(time.monotonic() - start_time))
+                print_process(self.window, "Processing... Elapsed Time: {}".format(fmtTime))
+                self.window['-VIEWPROCESS-'].update(background_color=gradientColor[indx])
+                self.window.Refresh()
+            stdout += line # Record process stdout
+            indx += 1
+            if indx > len(gradientColor) - 1:
+                indx = 0
+        self.window['-VIEWPROCESS-'].update(background_color="#000000")
         return self.rclone_format(stdout)
         
 
@@ -70,15 +80,3 @@ class RClone:
                 temp.append(s)
 
         return formatted_out
-
-
-    def prompt_password(self):
-        layout = [[sg.Text("Leave empty if no password")],      
-                    [sg.InputText(size=(20, 1), password_char='*')], [sg.Submit()]]      
-
-        window = sg.Window('Password', layout)    
-
-        event, values = window.read()    
-        window.close()
-
-        return (str(values[0]) + '\n') # Make sure pw in correct format
