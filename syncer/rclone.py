@@ -5,7 +5,7 @@ import threading
 import subprocess
 import PySimpleGUI as sg 
 
-from utils import print_process
+from .utils import print_process
 
 process_list = ['copy', 'sync']
 gradientColor = ['#0000b3', '#0000cc', '#0000e6', '#0000ff', '#1a1aff', '#3333ff', '#4d4dff']

@@ -5,8 +5,8 @@ import json
 import logging
 import PySimpleGUI as sg 
 
-from rclone import RClone
-from gui_process import GUI_Process
+from .rclone import RClone
+from .gui_process import GUI_Process
 
 logging.basicConfig(level=logging.DEBUG)
 

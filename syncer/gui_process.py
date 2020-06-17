@@ -1,7 +1,7 @@
 import os
 import logging
 
-from utils import load_previous_process, record_process, print_process
+from .utils import load_previous_process, record_process, print_process
 
 class GUI_Process:
     def __init__(self, window, rc):
