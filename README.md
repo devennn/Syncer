@@ -1,4 +1,4 @@
-# RClone command line simple GUI
+# Simple RClone command line GUI
 
 Simple GUI to Copy and Sync files across cloud storage. 
 
