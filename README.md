@@ -2,6 +2,13 @@
 
 Simple GUI to Copy and Sync files across cloud storage. 
 
+# Features
+Read RClone ![documentation](https://rclone.org/#what) to understand how the command work 
+- Copy
+- Sync
+- Move
+
+
 # Operating System
  - Tested on Zorin OS 15 running Ubuntu 18.04
 
