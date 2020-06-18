@@ -5,7 +5,7 @@ Simple GUI to Copy and Sync files across cloud storage.
 # Operating System
  - Tested on Zorin OS 15 running Ubuntu 18.04
 
-![Example](https://github.com/devennn/Syncer-cli/blob/master/assets/Peek%202020-06-18%2010-37.gif)
+![Example](https://github.com/devennn/Syncer-cli/blob/master/assets/Peek%202020-06-18%2019-32.gif)
 
 # Requirement
 
