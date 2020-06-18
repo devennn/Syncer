@@ -9,8 +9,7 @@ Simple GUI to Copy and Sync files across cloud storage.
 
 # Requirement
 
-Install RClone and setup cloud storage using ```rclone config```
- - ![howtogeek](https://www.howtogeek.com/451262/how-to-use-rclone-to-back-up-to-google-drive-on-linux/)
+Install RClone and setup cloud storage using ```rclone config```. You can follow this guid from ![howtogeek](https://www.howtogeek.com/451262/how-to-use-rclone-to-back-up-to-google-drive-on-linux/)
  
 # Installation
 ```
