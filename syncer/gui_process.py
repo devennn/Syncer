@@ -1,7 +1,13 @@
 import os
+from pathlib import Path
 import logging
 
-from .utils import load_previous_process, record_process, print_process
+prevProcessfname = os.path.join(str(Path.home()), "syncercache.json")
+
+try:
+    from utils import load_previous_process, record_process, print_process
+except Exception:
+    from .utils import load_previous_process, record_process, print_process
 
 class GUI_Process:
     def __init__(self, window, rc):
@@ -81,17 +87,15 @@ class GUI_Process:
         if self.rc.srcPath == '' or self.rc.desPath == '':
             return
         if event == '-COPY-':
-            record_process(self.rc.srcPath, self.rc.desPath)
-        print_process(self.window, "Start Copy...")
+            record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)
         self.rc.run_rclone("copy", [self.rc.srcPath])
-        print_process(self.window, "Done Copy...")
 
-    def sync_process(self):
+    def sync_process(self, event):
         if self.rc.srcPath == '' or self.rc.desPath == '':
-            return             
-        print_process(self.window, "Start Sync...")
+            return      
+        if event == '-SYNC-':
+            record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)       
         self.rc.run_rclone("sync")
-        print_process(self.window, "Done Sync...")
 
     def choose_previous(self, drive):
         logging.debug("main: PREVDIRS: {}".format(drive))
@@ -104,9 +108,8 @@ class GUI_Process:
         self.rc.desPath = desPath
 
     def drive_previous(self, drive):
-        fname = "prevprocess.json"
-        if os.path.exists(fname) is False:
+        if os.path.exists(prevProcessfname) is False:
             print_process(self.window, "No previous process...")
             return
-        hist_list = load_previous_process(fname, driveName=drive[0])
+        hist_list = load_previous_process(prevProcessfname, driveName=drive[0])
         self.window['-PREVDIRS-'].update(hist_list)                       

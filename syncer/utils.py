@@ -27,7 +27,7 @@ def load_previous_process(fname, drive_list=[], driveName=False):
             logging.debug("load_previous_process: {} no record".format(driveName))
     return hist_list
 
-def record_process(srcPath, desPath, fname="prevprocess.json"):
+def record_process(srcPath, desPath, fname):
     logging.debug("record_process: Start: {} -> {}".format(srcPath, desPath))
     driveName = srcPath.split(':')[0] + ':' # Correct drive format
 

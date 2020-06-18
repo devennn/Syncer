@@ -5,10 +5,13 @@ import threading
 import subprocess
 import PySimpleGUI as sg 
 
-from .utils import print_process
+try:
+    from utils import print_process
+except Exception:
+    from .utils import print_process
 
 process_list = ['copy', 'sync']
-gradientColor = ['#0000b3', '#0000cc', '#0000e6', '#0000ff', '#1a1aff', '#3333ff', '#4d4dff']
+gradientColor = ['#0080ff', '#0000ff', '#8000ff']
 
 class RClone:
     def __init__(self):
@@ -18,6 +21,7 @@ class RClone:
         self.desPath = ""
         self.window = None
         self.startProcess = False
+        self.process = None
         
 
     def run_rclone(self, command, args_list=[], backFlag=False):
@@ -48,25 +52,32 @@ class RClone:
     def rclone_process(self, cmd, pipeOutput):
 
         logging.debug("rclone_process: Invoking: {}".format(cmd))
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
+        self.process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
                                 universal_newlines=True)
-        p.stdin.write(self.password)
-        p.stdin.close()
+        self.process.stdin.write(self.password)
+        self.process.stdin.close()
 
         stdout = ""
         start_time = time.monotonic()
         indx = 0
-        for line in p.stdout: # Get Real time output from subprocess
-            if self.window is not None and self.startProcess is False and cmd[1] in process_list:
-                fmtTime = time.strftime("%H:%M:%S", time.gmtime(time.monotonic() - start_time))
-                print_process(self.window, "Processing... Elapsed Time: {}".format(fmtTime))
-                self.window['-VIEWPROCESS-'].update(background_color=gradientColor[indx])
-                self.window.Refresh()
+        print_process(self.window, "Processing...")
+        for line in self.process.stdout: # Get Real time output from subprocess
+            if self.window is not None and self.startProcess is False:
+                if cmd[1] in process_list:
+                    fmtTime = time.strftime("%H:%M:%S", time.gmtime(time.monotonic() - start_time))
+                    print_process(self.window, "Processing... Elapsed Time: {}".format(fmtTime))
+                    try:
+                        self.window['-VIEWPROCESS-'].update(background_color=gradientColor[indx])
+                        self.window.Refresh()
+                    except Exception as e:
+                        logging.debug("rclone_process: {}".format(e))
+                        return
             stdout += line # Record process stdout
             indx += 1
             if indx > len(gradientColor) - 1:
                 indx = 0
         self.window['-VIEWPROCESS-'].update(background_color="#000000")
+        print_process(self.window, "Done...")
         return self.rclone_format(stdout)
         
 

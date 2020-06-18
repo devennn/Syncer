@@ -2,11 +2,16 @@
 
 import os
 import json
+import time
 import logging
 import PySimpleGUI as sg 
 
-from .rclone import RClone
-from .gui_process import GUI_Process
+try:
+    from rclone import RClone
+    from gui_process import GUI_Process
+except Exception:
+    from .rclone import RClone
+    from .gui_process import GUI_Process
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -29,7 +34,7 @@ def setup_window(drive_list):
     row1_tab3 = [[
         sg.Frame("Drives", layout=[[sg.Listbox(values=drive_list, size=(15, 7) ,  key='-PREVDRIVE-', enable_events=True)], 
                     [sg.Button("Sync", key='-SYNCPREV-'), sg.Button("Copy", key='-COPYPREV-')]]), 
-        sg.Frame("Previous Process", layout=[[sg.Listbox(values=[], size=(42, 7) ,  key='-PREVDIRS-', enable_events=True)], 
+        sg.Frame("Choose Drive to View", layout=[[sg.Listbox(values=[], size=(42, 7) ,  key='-PREVDIRS-', enable_events=True)], 
                     [sg.Button("Choose Process", key='-CHOOSEPREV-')]])
     ]]
     row1_tabGroup = [sg.TabGroup([[sg.Tab("Start", row1_tab1, key='-STARTTAB-'), sg.Tab("New", row1_tab2, key='-NEWTAB-', disabled=True), 
@@ -84,7 +89,7 @@ def main():
                 gp.copy_process(event)
             
             if event == '-SYNC-' or event == '-SYNCPREV-': # Sync button  
-                gp.sync_process()
+                gp.sync_process(event)
             
             if event == '-CHOOSEPREV-':
                 gp.choose_previous(values['-PREVDIRS-'])
@@ -94,6 +99,9 @@ def main():
 
         else:
             logging.debug("main: Exit Program...")
+            if rc.process is not None:
+                    rc.process.kill()
+                    time.sleep(.25)
             break
 
 if __name__ == "__main__":
