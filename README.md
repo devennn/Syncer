@@ -21,7 +21,7 @@ Install RClone and setup cloud storage using ```rclone config```. You can follow
 # Installation
 1. Download or clone this repo
 2. cd into the Syncer-cli folder
-3. To install, run this command ```pip3 install -e```
+3. To install, run this command ```pip3 install -e .```
 4. Done!
 
 # Uninstall
