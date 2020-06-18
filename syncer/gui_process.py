@@ -83,19 +83,23 @@ class GUI_Process:
         self.window['-DES-'].update(self.chosenPath)
         self.rc.desPath = self.chosenPath
 
-    def copy_process(self, event):
+    def copy_process(self):
         if self.rc.srcPath == '' or self.rc.desPath == '':
             return
-        if event == '-COPY-':
-            record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)
+        record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)
         self.rc.run_rclone("copy", [self.rc.srcPath])
 
-    def sync_process(self, event):
+    def sync_process(self):
         if self.rc.srcPath == '' or self.rc.desPath == '':
             return      
-        if event == '-SYNC-':
-            record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)       
+        record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)       
         self.rc.run_rclone("sync")
+    
+    def move_process(self):
+        if self.rc.srcPath == '' or self.rc.desPath == '':
+            return      
+        record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)       
+        self.rc.run_rclone("move")
 
     def choose_previous(self, drive):
         logging.debug("main: PREVDIRS: {}".format(drive))
@@ -112,4 +116,4 @@ class GUI_Process:
             print_process(self.window, "No previous process...")
             return
         hist_list = load_previous_process(prevProcessfname, driveName=drive[0])
-        self.window['-PREVDIRS-'].update(hist_list)                       
+        self.window['-PREVDIRS-'].update(hist_list)   

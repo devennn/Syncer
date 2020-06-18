@@ -10,7 +10,7 @@ try:
 except Exception:
     from .utils import print_process
 
-process_list = ['copy', 'sync']
+process_list = ['copy', 'sync', 'move']
 gradientColor = ['#0080ff', '#0000ff', '#8000ff']
 
 class RClone:
@@ -45,6 +45,8 @@ class RClone:
             cmd= ["rclone", command, args_list[0], self.desPath, "--no-traverse", "--progress"]
         elif command == "sync":
             cmd= ["rclone", command, self.srcPath, self.desPath, "--progress"]
+        elif command == "move":
+            cmd= ["rclone", command, self.srcPath, self.desPath, "--no-traverse", "--progress"]
         
         return self.rclone_process(cmd, pipeOutput)
 
