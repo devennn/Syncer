@@ -8,6 +8,8 @@ Read RClone ![documentation](https://rclone.org/#what) to understand how the com
 - Sync
 - Move
 
+The program will create a json file which contains all previous process.
+
 
 # Operating System
  - Tested on Zorin OS 15 running Ubuntu 18.04
