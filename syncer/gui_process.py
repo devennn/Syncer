@@ -21,10 +21,10 @@ class GUI_Process:
         '''
         Startup process. If password is true other tabs are enabled
 
-        @param:
-            password (str): password for RClone
-        @return:
-            None
+            Parameters:
+                password (str): password for RClone
+            Returns:
+                None
         '''
         self.rc.startProcess = True
         if len(password) != 0:
@@ -50,11 +50,11 @@ class GUI_Process:
         '''
         List all drives registered
 
-        @param:
-            drives (list): List of drives
+            Parameters:
+                drives (list): List of drives
 
-        @return:
-            None
+            Returns:
+                None
         '''
         self.rc.pathBuild = ""
         stdout = self.rc.run_rclone("lsf", [drives])
@@ -64,11 +64,11 @@ class GUI_Process:
         '''
         List all directory in a drive or folder
 
-        @param:
-            dirs (list): list of dir
+            Parameters:
+                dirs (list): list of dir
 
-        @return:
-            None
+            Returns:
+                None
         '''
         if len(dirs) == 0: # Skip rclone if empty
             return
@@ -88,11 +88,11 @@ class GUI_Process:
         '''
         Process for choose file button
 
-        @param:
-            dir (str): file chosen
-        
-        @return:
-            None
+            Parameters:
+                dir (str): file chosen
+            
+            Returns:
+                None
         '''
         if len(self.rc.pathBuild) == 0:
             return
@@ -166,11 +166,11 @@ class GUI_Process:
         '''
         Process for choosing previous process button
 
-        @param:
-            drive (list): list of chosen process
-        
-        @ return:
-            None
+            Parameters:
+                drive (list): list of chosen process
+            
+            Returns:
+                None
         '''
         logging.debug("main: PREVDIRS: {}".format(drive))
         if len(drive) == 0: # Check invalid input
@@ -187,8 +187,8 @@ class GUI_Process:
         '''
         List previous process when a drive is clicked in Previous tab
 
-        @param:
-            drive (list): List of drive chosen
+            Parameters:
+                drive (list): List of drive chosen
         '''
         if os.path.exists(prevProcessfname) is False: # Check if there is previous process
             print_process(self.window, "No previous process...")

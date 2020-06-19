@@ -7,14 +7,13 @@ def load_previous_process(fname, drive_list=[], driveName=False):
     '''
     Load recorded process. If driven name is given, will skip checking all
 
-    @param:
-        fname (str): File name of containing saved process
-        drive_list (list): List of available drive from system
-        driveName: default to False. Pass string for filename
+        Parameters:
+            fname (str): File name of containing saved process
+            drive_list (list): List of available drive from system
+            driveName: default to False. Pass string for filename
 
-    @return:
-        hist_list (list): List of stored process
-
+        Returns:
+            hist_list (list): List of stored process
     '''
 
     hist_list = []
@@ -44,14 +43,13 @@ def record_process(srcPath, desPath, fname):
     '''
     To record process
 
-    @param:
-        srcPath (str): source path
-        desPath (str): Destination path
-        fname (str): file name to store process
+        Parameters:
+            srcPath (str): source path
+            desPath (str): Destination path
+            fname (str): file name to store process
 
-    @return:
-        None
-
+        Returns:
+            None
     '''
     logging.debug("record_process: Start: {} -> {}".format(srcPath, desPath))
     driveName = srcPath.split(':')[0] + ':' # Correct drive format eg: Google:
@@ -93,9 +91,9 @@ def print_process(window, message):
     '''
     Printing process status
 
-    @param:
-        windows: windows instance from PySimpleGUI
-        message (str): Message to print
+        Parameters:
+            windows: windows instance from PySimpleGUI
+            message (str): Message to print
     '''
     window['-VIEWPROCESS-'].update(message)
     window.Refresh()

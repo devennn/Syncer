@@ -29,13 +29,13 @@ class RClone:
         Entry point to run RClone command. For process that require additional process, 
         refer to RClone official documentation for info
 
-        @param:
-            command (str): command name
-            args_list (list): arguments of command if needed
-            backFlag (bool): True if current process is for back button
+            Parameters:
+                command (str): command name
+                args_list (list): arguments of command if needed
+                backFlag (bool): True if current process is for back button
 
-        @return:
-            stdout (list): Stdout from command line process
+            Returns:
+                stdout (list): Stdout from command line process
         '''
         if command == "lsf":
             if backFlag == False and args_list[0][0][-1] != '/' and self.pathBuild is not "":
@@ -63,11 +63,11 @@ class RClone:
         '''
         Spawn subprocess to interact with command line
 
-        @param:
-            cmd (list): Command to passed to Popen
+            Parameters:
+                cmd (list): Command to passed to Popen
 
-        @return:
-            stoud (list): formatted stdout from subprocess
+            Returns:
+                stoud (list): formatted stdout from subprocess
         '''
         logging.debug("rclone_process: Invoking: {}".format(cmd))
         self.process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
@@ -107,11 +107,11 @@ class RClone:
         '''
         Format stdout from subprocess
 
-        @param:
-            stdout (str): stdout from subprocess in string
+            Parameters:
+                stdout (str): stdout from subprocess in string
 
-        @return:
-            formatted_out (list): formatted string to list
+            Returns:
+                formatted_out (list): formatted string to list
         '''
         temp, formatted_out = [], []
         for s in stdout:
