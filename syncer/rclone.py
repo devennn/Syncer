@@ -10,8 +10,8 @@ try:
 except Exception:
     from .utils import print_process
 
-process_list = ['copy', 'sync', 'move']
-gradientColor = ['#0080ff', '#0000ff', '#8000ff']
+process_list = ['copy', 'sync', 'move'] # Process that requires color progress bar
+gradientColor = ['#0080ff', '#0000ff', '#8000ff'] # Color for progress bar
 
 class RClone:
     def __init__(self):
@@ -25,7 +25,18 @@ class RClone:
         
 
     def run_rclone(self, command, args_list=[], backFlag=False):
-        pipeOutput = False
+        '''
+        Entry point to run RClone command. For process that require additional process, 
+        refer to RClone official documentation for info
+
+        @param:
+            command (str): command name
+            args_list (list): arguments of command if needed
+            backFlag (bool): True if current process is for back button
+
+        @return:
+            stdout (list): Stdout from command line process
+        '''
         if command == "lsf":
             if backFlag == False and args_list[0][0][-1] != '/' and self.pathBuild is not "":
                 logging.debug("run_rclone: File: {}".format(args_list[0][0]))
@@ -34,13 +45,10 @@ class RClone:
                 self.pathBuild = os.path.join(self.pathBuild, args_list[0][0])
             cmd = ["rclone", command]
             cmd += [self.pathBuild]
-            pipeOutput = True
         elif command == "ls":
             cmd= ["rclone", command, args_list[0]]
-            pipeOutput = True
         elif command == "listremotes":
             cmd = ["rclone", command]
-            pipeOutput = True
         elif command == "copy":
             cmd= ["rclone", command, args_list[0], self.desPath, "--no-traverse", "--progress"]
         elif command == "sync":
@@ -48,42 +56,63 @@ class RClone:
         elif command == "move":
             cmd= ["rclone", command, self.srcPath, self.desPath, "--no-traverse", "--progress"]
         
-        return self.rclone_process(cmd, pipeOutput)
+        return self.rclone_process(cmd)
 
 
-    def rclone_process(self, cmd, pipeOutput):
+    def rclone_process(self, cmd):
+        '''
+        Spawn subprocess to interact with command line
 
+        @param:
+            cmd (list): Command to passed to Popen
+
+        @return:
+            stoud (list): formatted stdout from subprocess
+        '''
         logging.debug("rclone_process: Invoking: {}".format(cmd))
         self.process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
                                 universal_newlines=True)
-        self.process.stdin.write(self.password)
-        self.process.stdin.close()
+        self.process.stdin.write(self.password) # Write password
+        self.process.stdin.close() # close for safety
 
         stdout = ""
-        start_time = time.monotonic()
-        indx = 0
+        start_time = time.monotonic() #Get start time of process
+        indx = 0 # Color index
         print_process(self.window, "Processing...")
         for line in self.process.stdout: # Get Real time output from subprocess
             if self.window is not None and self.startProcess is False:
-                if cmd[1] in process_list:
-                    fmtTime = time.strftime("%H:%M:%S", time.gmtime(time.monotonic() - start_time))
+                if cmd[1] in process_list: # Only run color progress if command in list
+                    # get process elapsed time and print
+                    fmtTime = time.strftime("%H:%M:%S", time.gmtime(time.monotonic() - start_time)) 
                     print_process(self.window, "Processing... Elapsed Time: {}".format(fmtTime))
+
+                    # update color progress 
                     try:
                         self.window['-VIEWPROCESS-'].update(background_color=gradientColor[indx])
                         self.window.Refresh()
                     except Exception as e:
                         logging.debug("rclone_process: {}".format(e))
+                        self.process.kill() # Kill process if error happens
                         return
             stdout += line # Record process stdout
             indx += 1
             if indx > len(gradientColor) - 1:
                 indx = 0
-        self.window['-VIEWPROCESS-'].update(background_color="#000000")
+        self.window['-VIEWPROCESS-'].update(background_color="#000000") # Reset to black when done
         print_process(self.window, "Done...")
         return self.rclone_format(stdout)
         
 
     def rclone_format(self, stdout):
+        '''
+        Format stdout from subprocess
+
+        @param:
+            stdout (str): stdout from subprocess in string
+
+        @return:
+            formatted_out (list): formatted string to list
+        '''
         temp, formatted_out = [], []
         for s in stdout:
             if s is '\n':

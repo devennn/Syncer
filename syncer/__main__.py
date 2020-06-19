@@ -15,12 +15,22 @@ logging.basicConfig(level=logging.DEBUG)
 
 sg.ChangeLookAndFeel('BlueMono')  
 
-def setup_window(drive_list):
-    process_list = ["", "Copy", "Sync", "Move"]
+def setup_window():
+    '''
+    Return PySimpleGUI layout
+
+        Parameter:
+            None
+        Return:
+            PySimpleGUI list of layouts
+    '''
+    drive_list = [] # Drive list empty at start
+    process_list = ["", "Copy", "Sync", "Move"] # List of process for combo box
     drive_viewer_size = (15, 7)
     dirs_viewer_size = (40, 7) 
     tab2_button_size = (5, 1)
 
+    # Tabs layout
     row1_tab1 = [
         [sg.Text("Enter password to start. Leave empty if not available")],     
         [sg.InputText(size=(40, 1), password_char='*', key='-PW-')], 
@@ -53,7 +63,7 @@ def setup_window(drive_list):
 def main():
     rc = RClone()
     drive_list = []
-    layout = setup_window(drive_list)
+    layout = setup_window()
     window = sg.Window("Syncer", layout)
     rc.window = window
     gp = GUI_Process(window, rc)
@@ -88,7 +98,7 @@ def main():
             if event == '-SETDES-': # Set destination button
                 gp.set_destination()
         
-            if event == '-RUN-' or event == '-RUNPREV-':
+            if event == '-RUN-' or event == '-RUNPREV-': # Run button
                 if values['-PROC-'] == 'Copy' or values['-PROCPREV-'] == 'Copy':
                     gp.copy_process()
 
@@ -98,17 +108,15 @@ def main():
                 if values['-PROC-'] == 'Move' or values['-PROCPREV-'] == 'Move':
                     gp.move_process()
             
-            if event == '-CHOOSEPREV-':
+            if event == '-CHOOSEPREV-': # List directories on Previous tab
                 gp.choose_previous(values['-PREVDIRS-'])
             
-            if event == '-PREVDRIVE-':
+            if event == '-PREVDRIVE-': # List drives on Previous tab
                 gp.drive_previous(values['-PREVDRIVE-'])
 
         else:
             logging.debug("main: Exit Program...")
-            if rc.process is not None:
-                    rc.process.kill()
-                    time.sleep(.25)
+            time.sleep(.25) # Buffer time to clean up everything
             break
 
 if __name__ == "__main__":

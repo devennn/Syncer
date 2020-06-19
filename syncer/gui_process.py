@@ -18,6 +18,14 @@ class GUI_Process:
         self.drive_list = []
 
     def startup(self, password):
+        '''
+        Startup process. If password is true other tabs are enabled
+
+        @param:
+            password (str): password for RClone
+        @return:
+            None
+        '''
         self.rc.startProcess = True
         if len(password) != 0:
             logging.debug("main: Password entered")
@@ -39,80 +47,150 @@ class GUI_Process:
             self.window['-STARTMES-'].update("Wrong Password...")
     
     def list_drive(self, drives):
+        '''
+        List all drives registered
+
+        @param:
+            drives (list): List of drives
+
+        @return:
+            None
+        '''
         self.rc.pathBuild = ""
         stdout = self.rc.run_rclone("lsf", [drives])
         self.window['-DIRS-'].update(stdout)
 
     def list_dirs(self, dirs):
+        '''
+        List all directory in a drive or folder
+
+        @param:
+            dirs (list): list of dir
+
+        @return:
+            None
+        '''
         if len(dirs) == 0: # Skip rclone if empty
             return
         stdout = self.rc.run_rclone("lsf", [dirs])
         self.window['-DIRS-'].update(stdout)
 
     def back_button(self):
+        '''
+        Process for back button. List all contentc from 1 level before and update view
+        '''
         tempPathBuild = self.rc.pathBuild.rsplit(os.sep)
         self.rc.pathBuild = tempPathBuild[0]
         stdout = self.rc.run_rclone("lsf", backFlag=True)
         self.window['-DIRS-'].update(stdout) 
 
     def choose_file(self, dir):
+        '''
+        Process for choose file button
+
+        @param:
+            dir (str): file chosen
+        
+        @return:
+            None
+        '''
         if len(self.rc.pathBuild) == 0:
             return
-        if self.rc.pathBuild[-1] is ':':
+
+        if self.rc.pathBuild[-1] is ':': # For file in root directory
             self.chosenPath = self.rc.pathBuild + dir
         else:          
             self.chosenPath = os.path.join(self.rc.pathBuild, dir)
+
         logging.debug("main: Chosen File: {}".format(self.chosenPath))
         self.window['-DISP-'].update(self.chosenPath)
 
     def choose_folder(self):
+        '''
+        Process for choosing folder button
+        '''
         self.chosenPath = self.rc.pathBuild
         logging.debug("main: Chosen Folder: {}".format(self.chosenPath))
         self.window['-DISP-'].update(self.chosenPath)      
 
-    def set_source(self):   
+    def set_source(self):
+        '''
+        Process for setting source path
+        '''   
         self.window['-SRC-'].update(self.chosenPath)
         self.rc.srcPath = self.chosenPath        
 
     def set_destination(self):
-        if len(self.chosenPath) == 0:
+        '''
+        Process for setting destination folder
+        '''
+        if len(self.chosenPath) == 0: # Return if not path chosen
             return
-        if self.chosenPath[-1] != '/' and self.chosenPath[-1] != ':':
+
+        # Return if chosenPath is a file
+        if self.chosenPath[-1] != '/' and self.chosenPath[-1] != ':': 
             print_process(self.window, "Destination cannot be a File")
             return
+
         self.window['-DES-'].update(self.chosenPath)
-        self.rc.desPath = self.chosenPath
+        self.rc.desPath = self.chosenPath # Store value
 
     def copy_process(self):
+        '''
+        Process for copy button
+        '''
         if self.rc.srcPath == '' or self.rc.desPath == '':
             return
         record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)
         self.rc.run_rclone("copy", [self.rc.srcPath])
 
     def sync_process(self):
-        if self.rc.srcPath == '' or self.rc.desPath == '':
+        '''
+        Process for Sync button
+        '''
+        if self.rc.srcPath == '' or self.rc.desPath == '': # Check for invalid path
             return      
         record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)       
         self.rc.run_rclone("sync")
     
     def move_process(self):
-        if self.rc.srcPath == '' or self.rc.desPath == '':
+        '''
+        Process for Move process
+        '''
+        if self.rc.srcPath == '' or self.rc.desPath == '': # Check for invalid path
             return      
         record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)       
         self.rc.run_rclone("move")
 
     def choose_previous(self, drive):
+        '''
+        Process for choosing previous process button
+
+        @param:
+            drive (list): list of chosen process
+        
+        @ return:
+            None
+        '''
         logging.debug("main: PREVDIRS: {}".format(drive))
-        if len(drive) == 0:
+        if len(drive) == 0: # Check invalid input
             return
-        srcPath, _, desPath = drive[0].split()
+        srcPath, _, desPath = drive[0].split() # Split to remove '->'
+
+        # Update window
         self.window['-SRC-'].update(srcPath)
         self.rc.srcPath = srcPath
         self.window['-DES-'].update(desPath)
         self.rc.desPath = desPath
 
     def drive_previous(self, drive):
-        if os.path.exists(prevProcessfname) is False:
+        '''
+        List previous process when a drive is clicked in Previous tab
+
+        @param:
+            drive (list): List of drive chosen
+        '''
+        if os.path.exists(prevProcessfname) is False: # Check if there is previous process
             print_process(self.window, "No previous process...")
             return
         hist_list = load_previous_process(prevProcessfname, driveName=drive[0])
