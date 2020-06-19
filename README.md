@@ -16,9 +16,8 @@ The program will create a json file which contains all previous process.
 
 ![Example](https://github.com/devennn/Syncer-cli/blob/master/assets/Peek%202020-06-18%2019-32.gif)
 
-# Requirement
-
-Install RClone and setup cloud storage using ```rclone config```. You can follow this guide from ![howtogeek](https://www.howtogeek.com/451262/how-to-use-rclone-to-back-up-to-google-drive-on-linux/)
+# Requirement Install RClone and setup cloud storage using ```rclone config``` 
+You can follow this guide from ![howtogeek](https://www.howtogeek.com/451262/how-to-use-rclone-to-back-up-to-google-drive-on-linux/)
  
 # Installation
 1. Download or clone this repo
