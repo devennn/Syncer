@@ -29,3 +29,12 @@ __Install RClone and setup cloud storage using__ ```rclone config``` You can fol
 ```
 pip3 uninstall Syncer-cli
 ```
+
+# Contribution
+If you feel this project is useful, please do not hesitate to contribute. 
+
+Steps
+1. clone this repo
+2. cd into the repo
+3. Install dependencies ```pip3 install -r requirements.txt``` I recommend to setup a virtual environment
+4. Explore...
