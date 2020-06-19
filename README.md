@@ -41,5 +41,5 @@ You can:
 If you wish to contribute code,
 1. clone this repo
 2. cd into the repo
-3. Install dependencies ```pip3 install -r requirements.txt``` I recommend to setup a virtual environment
+3. Install dependencies ```pip3 install -r requirements.txt``` Recommend to setup a virtual environment
 4. Explore...
