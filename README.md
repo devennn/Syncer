@@ -33,11 +33,6 @@ pip3 uninstall Syncer-cli
 # Contribution
 If you feel this project is useful, please do not hesitate to contribute. 
 
-You can:
- - Submit an issue
- - Suggest a feature
- - Code
-
 If you wish to contribute code,
 1. clone this repo
 2. cd into the repo
