@@ -15,13 +15,13 @@ gradientColor = ['#0080ff', '#0000ff', '#8000ff'] # Color for progress bar
 
 class RClone:
     def __init__(self):
-        self.password = ""
-        self.pathBuild = ""
-        self.srcPath = ""
-        self.desPath = ""
-        self.window = None
-        self.startProcess = False
-        self.process = None
+        self.password = ""          # Password
+        self.pathBuild = ""         # previous path chosen
+        self.srcPath = ""           # Source path
+        self.desPath = ""           # Destination path
+        self.window = None          # Window instance
+        self.startProcess = False   # Flag for start process 
+        self.process = None         # subprocess instance
         
 
     def run_rclone(self, command, args_list=[], backFlag=False):
@@ -96,7 +96,7 @@ class RClone:
                         return
             stdout += line # Record process stdout
             indx += 1
-            if indx > len(gradientColor) - 1:
+            if indx > len(gradientColor) - 1: # Reset index to 0
                 indx = 0
         self.window['-VIEWPROCESS-'].update(background_color="#000000") # Reset to black when done
         print_process(self.window, "Done...")

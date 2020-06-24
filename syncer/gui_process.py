@@ -97,7 +97,8 @@ class GUI_Process:
         if len(self.rc.pathBuild) == 0:
             return
 
-        if self.rc.pathBuild[-1] is ':': # For file in root directory
+        # Check last char for file in root directory
+        if self.rc.pathBuild[-1] is ':': 
             self.chosenPath = self.rc.pathBuild + dir
         else:          
             self.chosenPath = os.path.join(self.rc.pathBuild, dir)
@@ -127,7 +128,7 @@ class GUI_Process:
         if len(self.chosenPath) == 0: # Return if not path chosen
             return
 
-        # Return if chosenPath is a file
+        # Return if chosenPath is a file by checking the last character
         if self.chosenPath[-1] != '/' and self.chosenPath[-1] != ':': 
             print_process(self.window, "Destination cannot be a File")
             return
@@ -139,8 +140,10 @@ class GUI_Process:
         '''
         Process for copy button
         '''
+        # Check for invalid path
         if self.rc.srcPath == '' or self.rc.desPath == '':
             return
+
         record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)
         self.rc.run_rclone("copy", [self.rc.srcPath])
 
@@ -148,8 +151,10 @@ class GUI_Process:
         '''
         Process for Sync button
         '''
-        if self.rc.srcPath == '' or self.rc.desPath == '': # Check for invalid path
-            return      
+        # Check for invalid path
+        if self.rc.srcPath == '' or self.rc.desPath == '': 
+            return     
+
         record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)       
         self.rc.run_rclone("sync")
     
@@ -157,7 +162,8 @@ class GUI_Process:
         '''
         Process for Move process
         '''
-        if self.rc.srcPath == '' or self.rc.desPath == '': # Check for invalid path
+        # Check for invalid path
+        if self.rc.srcPath == '' or self.rc.desPath == '': 
             return      
         record_process(self.rc.srcPath, self.rc.desPath, prevProcessfname)       
         self.rc.run_rclone("move")
@@ -173,9 +179,13 @@ class GUI_Process:
                 None
         '''
         logging.debug("main: PREVDIRS: {}".format(drive))
-        if len(drive) == 0: # Check invalid input
+
+        # Check invalid input
+        if len(drive) == 0: 
             return
-        srcPath, _, desPath = drive[0].split() # Split to remove '->'
+        
+        # Split to remove '->'
+        srcPath, _, desPath = drive[0].split() 
 
         # Update window
         self.window['-SRC-'].update(srcPath)
@@ -190,8 +200,10 @@ class GUI_Process:
             Parameters:
                 drive (list): List of drive chosen
         '''
-        if os.path.exists(prevProcessfname) is False: # Check if there is previous process
+        # Check if there is previous process
+        if os.path.exists(prevProcessfname) is False: 
             print_process(self.window, "No previous process...")
             return
+
         hist_list = load_previous_process(prevProcessfname, driveName=drive[0])
         self.window['-PREVDIRS-'].update(hist_list)   

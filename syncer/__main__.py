@@ -24,11 +24,11 @@ def setup_window():
         Return:
             PySimpleGUI list of layouts
     '''
-    drive_list = [] # Drive list empty at start
+    drive_list = []                             # Drive list empty at start
     process_list = ["", "Copy", "Sync", "Move"] # List of process for combo box
-    drive_viewer_size = (15, 7) # Drive viewer window size
-    dirs_viewer_size = (40, 7)  # Directory viewer window size
-    t2BtnSize = (5, 1) # tab 2 button size
+    drive_viewer_size = (15, 7)                 # Drive viewer window size
+    dirs_viewer_size = (40, 7)                  # Directory viewer window size
+    t2BtnSize = (5, 1)                          # tab 2 button size
 
     # Color
     whte = '#ffffff'
