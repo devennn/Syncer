@@ -1,6 +1,6 @@
 # Simple RClone GUI
 
-Simple GUI to Copy and Sync files across cloud storage. 
+Simple GUI to Copy, Sync adn Transfer files across cloud storage. Use for simple process only. 
 
 # Features
 Read RClone ![documentation](https://rclone.org/#what) to understand how the command work 
@@ -29,12 +29,3 @@ __Install RClone and setup cloud storage using__ ```rclone config``` You can fol
 ```
 pip3 uninstall Syncer-cli
 ```
-
-# Contribution
-If you feel this project is useful, please do not hesitate to contribute. 
-
-If you wish to contribute code,
-1. clone this repo
-2. cd into the repo
-3. Install dependencies ```pip3 install -r requirements.txt``` Recommend to setup a virtual environment
-4. Explore...
